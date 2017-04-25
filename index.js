@@ -2,7 +2,8 @@ const app = require("express")();
 const bodyParser = require("body-parser");
 const expressSession = require("express-session");
 const flash = require("express-flash");
-require('dotenv').config()
+require('dotenv').config();
+const request = require('request');
 
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -99,10 +100,29 @@ var FB = require('fb');
 app.get("/", (req, res) => {
   if (req.user) {
     let fbInfo = req.user.getModuleInfo("Facebook");
+    let ghInfo = req.user.getModuleInfo("Github");
+    let fbPromise;
+    let ghPromise;
+
 
     if (fbInfo.connected) {
-      FB.api('me/photos', { fields: 'picture', access_token: fbInfo.token }, function (data) {
-          res.render("home", { user: req.user, pictures: data.data });
+      fbPromise = new Promise( (resolve, reject) => {
+        FB.api('me/photos', { fields: 'picture', access_token: fbInfo.token }, function (data) {
+          
+          resolve(data);
+          // res.render("home", { user: req.user, pictures: data.data });
+      })
+    }
+
+    if(ghInfo.connected) {
+      ghPromise = new Promise( (resolve, reject) => {
+        request(`https://api.github.com/${ghInfo.username}?access_token=${ghInfo.token}`, function (error, response, body) {
+            resolve(body);
+        });
+
+        
+    }
+      
       });
     } else {
       res.render("home", { user: req.user });
@@ -119,6 +139,7 @@ app.get("/login", (req, res) => {
 
 app.get("/logout", function(req, res) {
   req.logout();
+  console.log(req.user);
   res.redirect("/");
 });
 

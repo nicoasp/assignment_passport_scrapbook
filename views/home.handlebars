@@ -9,7 +9,7 @@
 		  </theader>
 		  {{#each user.passportModules as |module|}}
 			  {{#if module.connected}}
-				  <tr style="background-color: green">
+				  <tr style="background-color: #dfefce">
 				  	<td colspan="2">{{module.name}}</td>
 				  </tr>
 				{{else}}
@@ -29,7 +29,7 @@
 	{{#if pictures}}
 		<div class="col-sm-6">
 			<div class="row">
-				<h3>Facebook Photos</h3>
+				<h4>Facebook Photos</h4>
 				{{#each pictures as |picture|}}
 					<div class="col-sm-4">
 						<img src="{{picture.picture}}">
