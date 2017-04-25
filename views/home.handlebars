@@ -7,9 +7,18 @@
 		   <th>Passport Status</th>
 		   <th></th>
 		  </theader>
-		  <tr>
-		  <td>Facebook</td>
-		  </tr>
+		  {{#each user.passportModules as |module|}}
+			  {{#if module.connected}}
+				  <tr style="background-color: green">
+				  	<td colspan="2">{{module.name}}</td>
+				  </tr>
+				{{else}}
+					<tr>
+				  	<td>{{module.name}}</td>
+				  	<td><a class="btn btn-success" href="#">Connect</a></td>
+				  </tr>
+				{{/if}}
+		  {{/each}}
 		</table>
 	</div>
 </div>

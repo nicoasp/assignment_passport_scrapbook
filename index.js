@@ -29,10 +29,25 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // User and Mongoose code
-
 const User = require("./models/User");
 const mongoose = require("mongoose");
-mongoose.connect("mongodb://localhost/passport-assignment");
+const cleanDb = require('./seeds/clean');
+
+app.use((req, res, next) => {
+  if (mongoose.connection.readyState) {
+    next();
+  }
+  else {
+    mongoose.connect("mongodb://localhost/passport-assignment")
+      .then(() => {
+        cleanDb().then(() => {
+          next()
+        })
+      });
+  }
+});
+
+
 
 passport.serializeUser(function(user, done) {
   done(null, user.id);

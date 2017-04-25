@@ -6,7 +6,7 @@ const UserSchema = mongoose.Schema({
   facebookId: { type: String, require: true, unique: true },
   passportModules: { 
   	type: [],
-  	default: [{name: "Facebook", connected: false }] 
+  	default: [{name: "Facebook", connected: false }, {name: "Github", connected: false}] 
   }
 });
 
