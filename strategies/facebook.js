@@ -13,8 +13,9 @@ const facebookStrategy = () => {
     function(accessToken, refreshToken, profile, done) {
       const facebookId = profile.id;
       const displayName = profile.displayName;
+      console.log(accessToken);
 
-      console.log(profile);
+      // console.log(profile);
       User.findOne({ facebookId }, function(err, user) {
         if (err) return done(err);
 
