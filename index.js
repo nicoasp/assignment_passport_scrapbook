@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const expressSession = require("express-session");
 const flash = require("express-flash");
 require('dotenv').config()
+const {connectModule} = require("./helpers/helpers");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(flash());
@@ -64,6 +65,7 @@ passport.use(
         if (!user) {
           // Create a new account if one doesn't exist
           user = new User({ facebookId, displayName });
+          connectModule(user, "Facebook");
           user.save((err, user) => {
             if (err) return done(err);
             done(null, user);
