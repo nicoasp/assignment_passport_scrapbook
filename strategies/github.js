@@ -15,10 +15,12 @@ module.exports = new GitHubStrategy({
       const displayName = profile.displayName;
 
       if (req.user) {
+        console.log("before saving", req.user);
         req.user.githubId = githubId;
         req.user.displayName = req.user.displayName || displayName;
         connectModule(req.user, accessToken, "Github");
         req.user.save((err, user) => {
+          console.log("after saving", user)
           if (err) {
             done(err);
           } else {
