@@ -3,7 +3,8 @@ const uniqueValidator = require("mongoose-unique-validator");
 
 const UserSchema = mongoose.Schema({
   displayName: { type: String, required: true },
-  facebookId: { type: String, require: true, unique: true },
+  facebookId: { type: String, unique: true },
+  githubId: { type: String, unique: true },
   passportModules: { 
   	type: [],
   	default: [{name: "Facebook", connected: false }, {name: "Github", connected: false}] 

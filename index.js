@@ -40,9 +40,9 @@ app.use((req, res, next) => {
   else {
     mongoose.connect("mongodb://localhost/passport-assignment")
       .then(() => {
-        cleanDb().then(() => {
+        // cleanDb().then(() => {
           next()
-        })
+        // })
       });
   }
 });

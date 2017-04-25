@@ -18,9 +18,10 @@ const facebookStrategy = () => {
       const displayName = profile.displayName;
       
       if (req.user) {
+        console.log("Inside the if req.user");
         req.user.facebookId = facebookId;
-        req.user.displayName = displayName;
-        connectModule(user, accessToken, "Facebook");
+        req.user.displayName = req.user.displayName || displayName;
+        connectModule(req.user, accessToken, "Facebook");
         req.user.save((err, user) => {
           if (err) {
             done(err);
