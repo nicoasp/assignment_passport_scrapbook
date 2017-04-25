@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 const expressSession = require("express-session");
 const flash = require("express-flash");
 require('dotenv').config()
-const {connectModule} = require("./helpers/helpers");
+
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(flash());
@@ -59,41 +59,17 @@ passport.deserializeUser(function(id, done) {
   });
 });
 
-// facebook
-const FacebookStrategy = require("passport-facebook").Strategy;
+// Require and use Facebook Strategy
+const {
+  facebookStrategy
+} = require("./strategies/facebook");
 
-passport.use(
-  new FacebookStrategy(
-    {
-      clientID: process.env.FACEBOOK_APP_ID,
-      clientSecret: process.env.FACEBOOK_APP_SECRET,
-      callbackURL: "http://localhost:3000/auth/facebook/callback"
-    },
-    function(accessToken, refreshToken, profile, done) {
-      const facebookId = profile.id;
-      const displayName = profile.displayName;
+passport.use(facebookStrategy());
 
-      console.log(profile);
-      User.findOne({ facebookId }, function(err, user) {
-        if (err) return done(err);
 
-        if (!user) {
-          // Create a new account if one doesn't exist
-          user = new User({ facebookId, displayName });
-          connectModule(user, "Facebook");
-          user.save((err, user) => {
-            if (err) return done(err);
-            done(null, user);
-          });
-        } else {
-          // Otherwise, return the extant user.
-          done(null, user);
-        }
-      });
-    }
-  )
-);
 
+
+// Facebook Auth Routes
 app.get("/auth/facebook", passport.authenticate("facebook"));
 
 app.get(
@@ -103,6 +79,10 @@ app.get(
     failureRedirect: "/login"
   })
 );
+
+// app.use(fbPicturesMiddleware());
+
+
 
 app.get("/", (req, res) => {
   if (req.user) {
