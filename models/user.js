@@ -12,6 +12,14 @@ const UserSchema = mongoose.Schema({
 
 UserSchema.plugin(uniqueValidator);
 
+UserSchema.methods.getModuleInfo = function(moduleName) {
+    return this.passportModules.find((module) => {
+			return module.name === moduleName;
+		});
+};
+
+
+
 const User = mongoose.model("User", UserSchema);
 
 module.exports = User;

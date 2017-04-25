@@ -80,25 +80,23 @@ app.get(
   })
 );
 
-// app.use(fbPicturesMiddleware());
+
 
 var FB = require('fb');
-// fb = new FB.Facebook(options);
+
 
 app.get("/", (req, res) => {
   if (req.user) {
+    let fbInfo = req.user.getModuleInfo("Facebook");
 
-    //fb graph api docs
-    FB.api('4', { fields: 'id,name,picture.type(large)' }, function (res) {
-        if(!res || res.error) {
-          console.log(!res ? 'error occurred' : res.error);
-          return;
-        }
-        console.log(res.id);
-        console.log(res.name);
+    if (fbInfo.connected) {
+      FB.api('me/photos', { fields: 'picture', access_token: fbInfo.token }, function (data) {
+          res.render("home", { user: req.user, pictures: data.data });
       });
+    } else {
+      res.render("home", { user: req.user });
+    }
 
-    res.render("home", { user: req.user });
   } else {
     res.redirect("/login");
   }

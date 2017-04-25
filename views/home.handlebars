@@ -22,3 +22,22 @@
 		</table>
 	</div>
 </div>
+
+
+<div class="row">
+
+	{{#if pictures}}
+		<div class="col-sm-6">
+			<div class="row">
+				<h3>Facebook Photos</h3>
+				{{#each pictures as |picture|}}
+					<div class="col-sm-4">
+						<img src="{{picture.picture}}">
+					</div>
+				{{/each}}
+			</div>
+		</div>
+	{{/if}}
+
+</div>
+
