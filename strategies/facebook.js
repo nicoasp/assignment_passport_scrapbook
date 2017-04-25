@@ -53,6 +53,4 @@ const facebookStrategy = () => {
 
 
 
-module.exports = {
-	facebookStrategy,
-}
+module.exports = facebookStrategy;

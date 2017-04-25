@@ -60,13 +60,11 @@ passport.deserializeUser(function(id, done) {
 });
 
 // Require and use Facebook Strategy
-const {
-  facebookStrategy
-} = require("./strategies/facebook");
+const facebookStrategy = require("./strategies/facebook");
+const githubStrategy = require("./strategies/github");
 
 passport.use(facebookStrategy());
-
-
+passport.use(githubStrategy);
 
 
 // Facebook Auth Routes
@@ -79,6 +77,19 @@ app.get(
     failureRedirect: "/login"
   })
 );
+
+// Github Auth Routes
+app.get("/auth/github", passport.authenticate("github"));
+
+app.get(
+  "/auth/github/callback",
+  passport.authenticate("github", {
+    successRedirect: "/",
+    failureRedirect: "/login"
+  })
+);
+
+
 
 
 
