@@ -13,12 +13,12 @@ module.exports = new GitHubStrategy({
   function(req, accessToken, refreshToken, profile, done) {
       const githubId = profile.id;
       const displayName = profile.displayName;
-      console.log(profile)
+      const username = profile.username;
       if (req.user) {
         
         req.user.githubId = githubId;
         req.user.displayName = req.user.displayName || displayName;
-        connectModule(req.user, accessToken, "Github");
+        connectModule(req.user, accessToken, "Github", username);
         req.user.save((err, user) => {
 
           if (err) {
@@ -34,7 +34,7 @@ module.exports = new GitHubStrategy({
           if (!user) {
             // Create a new account if one doesn't exist
             user = new User({ githubId , displayName });
-            connectModule(user, accessToken, "Github");
+            connectModule(user, accessToken, "Github", username);
             user.save((err, user) => {
               if (err) return done(err);
               done(null, user);

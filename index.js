@@ -101,8 +101,8 @@ app.get("/", (req, res) => {
   if (req.user) {
     let fbInfo = req.user.getModuleInfo("Facebook");
     let ghInfo = req.user.getModuleInfo("Github");
-    let fbPromise;
-    let ghPromise;
+    let fbPromise = new Promise( (resolve, reject) => { resolve()});
+    let ghPromise = new Promise( (resolve, reject) => { resolve()});
 
 
     if (fbInfo.connected) {
@@ -111,22 +111,41 @@ app.get("/", (req, res) => {
           
           resolve(data);
           // res.render("home", { user: req.user, pictures: data.data });
+        })
       })
     }
 
     if(ghInfo.connected) {
       ghPromise = new Promise( (resolve, reject) => {
-        request(`https://api.github.com/${ghInfo.username}?access_token=${ghInfo.token}`, function (error, response, body) {
+        let url = `https://api.github.com/users/${ghInfo.username}/repos`;
+        let headers = {
+          'User-Agent': `${ghInfo.username}`,
+          'Authorization': `token ${ghInfo.token}`
+        }
+        console.log(url);
+        request({
+          url: url, 
+          headers: headers}, 
+          function (error, response, body) {
             resolve(body);
         });
-
-        
+      })        
     }
       
-      });
-    } else {
-      res.render("home", { user: req.user });
-    }
+    Promise.all([fbPromise, ghPromise]).then(([fbData, ghData]) => {
+      let pictures, repoNames;
+      if (fbData) {
+        pictures = fbData.data;
+      }
+      if (ghData) {
+        ghData = JSON.parse(ghData);
+        ghData = ghData.map((repo) => {
+          return repo.name;
+        })
+        repoNames = ghData;
+      }
+      res.render("home", { user: req.user, pictures, repoNames });
+    })
 
   } else {
     res.redirect("/login");
