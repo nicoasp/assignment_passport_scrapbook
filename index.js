@@ -44,6 +44,7 @@ app.use((req, res, next) => {
         // cleanDb().then(() => {
           next()
         // })
+        
       });
   }
 });
@@ -63,9 +64,11 @@ passport.deserializeUser(function(id, done) {
 // Require and use Facebook Strategy
 const facebookStrategy = require("./strategies/facebook");
 const githubStrategy = require("./strategies/github");
+const localStrategy = require("./strategies/local");
 
 passport.use(facebookStrategy());
 passport.use(githubStrategy);
+passport.use(localStrategy);
 
 
 // Facebook Auth Routes
@@ -89,6 +92,14 @@ app.get(
     failureRedirect: "/login"
   })
 );
+
+// Local Auth
+app.post("/login", passport.authenticate(
+  "local", 
+{
+  successRedirect: "/",
+  failureRedirect: "/login"
+}));
 
 
 

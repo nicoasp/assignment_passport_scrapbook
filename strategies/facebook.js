@@ -15,12 +15,11 @@ const facebookStrategy = () => {
     function(req, accessToken, refreshToken, profile, done) {
 
       const facebookId = profile.id;
-      const displayName = profile.displayName;
+      const username = profile.displayName;
       
       if (req.user) {
-        console.log("Inside the if req.user");
         req.user.facebookId = facebookId;
-        req.user.displayName = req.user.displayName || displayName;
+        req.user.username = req.user.username || username;
         connectModule(req.user, accessToken, "Facebook");
         req.user.save((err, user) => {
           if (err) {
@@ -35,7 +34,7 @@ const facebookStrategy = () => {
 
           if (!user) {
             // Create a new account if one doesn't exist
-            user = new User({ facebookId, displayName });
+            user = new User({ facebookId, username });
             connectModule(user, accessToken, "Facebook");
             user.save((err, user) => {
               if (err) return done(err);
